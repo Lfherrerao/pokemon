@@ -39,7 +39,7 @@ class TrainerController extends Controller
      */
     public function store(StoreTrainerRecuest $request)
     {
-       
+
 
         if ($request->hasFile('avatar')) {
             echo "entra al if";
@@ -69,7 +69,6 @@ class TrainerController extends Controller
 
         $t = Trainer::where('slug', '=', $slug)->firstOrFail();
         return view('trainers.show', compact('t'));
-      
     }
 
     /**
@@ -118,7 +117,7 @@ class TrainerController extends Controller
         }
 
         $t->save();
-        return redirect()->route('trainer.show',[$slug]);
+        return redirect()->route('trainer.show', [$slug])->with('status','Entrenador '.$t->name.' modificado con exito');
     }
 
     /**
@@ -129,13 +128,13 @@ class TrainerController extends Controller
      */
     public function destroy($slug)
     {
-       
-        
-        $t = Trainer::where('slug', '=', $slug)->firstOrFail();
-        //dd($t->toArray());
-        $t->delete();
 
-        return redirect()->route('trainer.index');
-        
+
+        $t = Trainer::where('slug', '=', $slug)->firstOrFail();
+        $file_path = public_path().'/images/'.$t->avatar;
+        \File::delete($file_path);
+        $t->delete();
+       return redirect()->route('trainer.index')->with('status','Entrenador '.$t->name.' Eliminado con exito');;
+      // return $file_path;
     }
 }
